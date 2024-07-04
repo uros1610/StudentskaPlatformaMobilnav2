@@ -1,0 +1,10 @@
+brisanje redova iz tabele u kojima su vrijednost stage-a NA
+i uzimanje kolona svih koje nisu NA, ne daje bas dobre rezultate.
+0.57 za random forest,gradientboostingclassifier 0.44,
+za decision tree u zavisnosti od max_depth-a daje 0.51 za 4
+i 0.39 za max_depth5,logisticka regresija daje 0.45,dok 
+KNN za 3 susjeda daje 0.34 dok za k = 10 daje 0.42
+
+za vece k kod KNN,daje bolje rezultate,ne preveliko za k = 50 daje 60%
+
+Biranje sa vjerovatnocom ne daje dobre rezultate,najbolje rezultate daje srednja vrijednost za numericke atribute i biranje najucestalije vrijednost za kategoricke atribute
