@@ -30,7 +30,7 @@ const sviStudentiJedanSmjer = (req,res) => {
 const sviRezultatiStudenta = (req,res) => {
     const query = "SELECT * FROM Rezultat WHERE korisnickoime_studenta = ?"
 
-    console.log("OVDJE MORA DA UDJE")
+    console.log("usao");
 
     const token = req.headers.authorization.split(" ")[1];
 
@@ -65,7 +65,7 @@ const sviRezultatiStudentaJedanPredmet = (req,res) => {
     })
 }
 const sviPredmetiStudenta = (req,res) => {
-    const query = "SELECT ime_predmeta AS imePredmeta, ime_smjera AS imeSmjera,ime_fakulteta AS imeFakulteta, ukupan_broj_poena AS ukupanBrojPoena FROM Pohadja WHERE korisnickoime_studenta = ?"
+    const query = "SELECT ime_predmeta AS imePredmeta, ime_smjera AS imeSmjera,ime_fakulteta AS imeFakulteta,ukupan_broj_poena AS ukupanBrojPoena FROM Pohadja WHERE korisnickoime_studenta = ?"
 
     const token = req.headers.authorization.split(" ")[1];
 
@@ -91,7 +91,7 @@ const sviPredmetiStudenta = (req,res) => {
     
 
 const sviStudentiPredmet = (req,res) => {
-    const query = `SELECT s.korisnickoime AS korisnickoIme, s.indeks_studenta AS indeks,s.ime_studenta AS imeStudenta,s.prezime_studenta AS prezimeStudenta FROM Pohadja p 
+    const query = `SELECT s.korisnickoime AS korisnickoIme, s.indeks_studenta AS indeks,s.ime_studenta AS imeStudenta,s.prezime_studenta AS prezimeStudenta,ukupan_broj_poena AS ukupanBrojPoena FROM Pohadja p 
     INNER JOIN Student s ON s.korisnickoime = p.korisnickoime_studenta 
     WHERE ime_predmeta = ? AND p.ime_smjera = ? AND s.ime_fakulteta = ?
     AND s.indeks_studenta LIKE ? AND s.ime_studenta LIKE ? AND s.prezime_studenta LIKE ?
@@ -120,74 +120,73 @@ const sviStudentiPredmet = (req,res) => {
     })
 }
 
-const updateRezultat = (req,res) => {
-
+const updateRezultat = (req, res) => {
     const query = "UPDATE Rezultat SET broj_poena = ? WHERE id_provjere = ?";
     const query2 = "SELECT * FROM Rezultat WHERE id_provjere = ?";
+    const updateUkupanBrojPoena = "UPDATE Pohadja SET ukupan_broj_poena = ? WHERE korisnickoime_studenta = ? AND ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ?";
+    const updateUkupanBrojPoenaSviIspiti = "UPDATE Svi_Ispiti SET brojPoena = ? WHERE korisnickoime_studenta = ? AND ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ?";
 
-    const {idRezultat} = req.params;
-
-    const brojPoena = req.body.brojPoena;
+    const arrayObjects = [...req.body];
 
     const token = req.headers.authorization.split(" ")[1];
-    
-    console.log(brojPoena,idRezultat);
 
-
-    if(!token) {
+    if (!token) {
         return res.status(401).json("Unauthorized!");
     }
 
-
-    jwt.verify(token,process.env.SECRET_KEY,(err,decoded) => {
-
-        if(err || decoded.rola === 'Student') {
+    jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
+        if (err || decoded.rola === 'Student') {
             return res.status(403).json("Forbidden!");
         }
 
-       
+        try {
+            const updatePromises = arrayObjects.map(async (item) => {
+                const keys = Object.keys(item.scores);
+                const ukupanBrojPoena = item.scores.ukupanBrojPoena;
+                console.log(ukupanBrojPoena);
 
-        db.query(query,[brojPoena,idRezultat],(err,data) => {
+                // Iterate through all keys except ukupanBrojPoena
+                const updateKeyPromises = keys.filter(key => key !== 'ukupanBrojPoena').map(async (key) => {
+                    const brojPoena = item.scores[key];
+                    const id_provjere = parseInt(key);
 
-            if(err) {
-                return res.status(500).json(err);
-            }
+                    const updateRezultat = new Promise((resolve, reject) => {
+                        db.query(query, [brojPoena, id_provjere], (err, data) => {
+                            if (err) return reject(err);
+                            if (data.affectedRows === 0) return reject("Not found");
 
+                            db.query(query2, [id_provjere], (err, data) => {
+                                if (err) return reject(err);
 
-            if(data.affectedRows === 0) {
-                return res.status(404).json("Not found");
-            }
+                                const jsonFormat = data[0];
 
-            db.query(query2,[idRezultat],(err,data) => {
-                if(err) {
-                    return res.status(500).json(err);
-                }
+                                db.query(updateUkupanBrojPoena, [ukupanBrojPoena, jsonFormat.korisnickoime_studenta, jsonFormat.ime_predmeta, jsonFormat.ime_smjera, jsonFormat.ime_fakulteta], (err, data) => {
+                                    if (err) return reject(err);
 
-                const jsonFormat = data[0];
+                                    db.query(updateUkupanBrojPoenaSviIspiti, [ukupanBrojPoena, jsonFormat.korisnickoime_studenta, jsonFormat.ime_predmeta, jsonFormat.ime_smjera, jsonFormat.ime_fakulteta], (err, data) => {
+                                        if (err) return reject(err);
+                                        resolve();
+                                    });
+                                });
+                            });
+                        });
+                    });
 
-                
-                const updateUkupanBrojPoena = "UPDATE Pohadja SET ukupan_broj_poena = ? WHERE korisnickoime_studenta = ? AND ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ?"
-                db.query(updateUkupanBrojPoena,[req.body.ukupanBrojPoena,jsonFormat.korisnickoime_studenta,jsonFormat.ime_predmeta,jsonFormat.ime_smjera,jsonFormat.ime_fakulteta],(err,data) => {
-                    if(err) {
-                        return res.status(500).json(err);
-                    }
-                    const updateUkupanBrojPoenaSviIspiti = "UPDATE Svi_Ispiti SET brojPoena = ? WHERE korisnickoime_studenta = ? AND ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ?"
+                    return updateRezultat;
+                });
 
-                    db.query(updateUkupanBrojPoenaSviIspiti,[req.body.ukupanBrojPoena,jsonFormat.korisnickoime_studenta,jsonFormat.ime_predmeta,jsonFormat.ime_smjera,jsonFormat.ime_fakulteta],(err,data) => {
-                        if(err) {
-                            return res.status(500).json(err);
-                        }
-                    return res.status(200).json("Success");
-                    })
+                return Promise.all(updateKeyPromises);
+            });
 
-                })
-            })
+            await Promise.all(updatePromises);
+            return res.status(200).json("Success");
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json(error);
+        }
+    });
+};
 
-        })
-
-    })
-
-}
 
 const sveInfoStudent = (req, res) => {
     const query = `

@@ -40,17 +40,14 @@ exports.sviMaterijaliPredmet = (req, res) => {
     const ime_predmeta = req.params.imePredmeta;
     const ime_smjera = req.params.imeSmjera;
     const ime_fakulteta = req.params.imeFakulteta;
-    const id = req.params.id;
 
-    const query = `SELECT putanja FROM materijal WHERE ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ? ORDER BY datum_kreiranja DESC LIMIT ?,?`;
+    const query = `SELECT putanja,naslov FROM materijal WHERE ime_predmeta = ? AND ime_smjera = ? AND ime_fakulteta = ? ORDER BY datum_kreiranja DESC`;
 
-    console.log(req.params);
-    const limit = 10;
-    const offset = (id-1)*10;
+    
 
     console.log("USAO je ovdje");
 
-    db.query(query, [ime_predmeta, ime_smjera, ime_fakulteta,offset,limit], (err,results) => {
+    db.query(query, [ime_predmeta, ime_smjera, ime_fakulteta], (err,results) => {
         if (err) {
             return res.status(500).json(err);
         }
@@ -58,7 +55,7 @@ exports.sviMaterijaliPredmet = (req, res) => {
         let imena_materijala = [];
 
         results.forEach(materijal => {
-            let ime_materijala = { id:materijal.id, putanja:materijal.putanja.split("/")[3] };
+            let ime_materijala = { id:materijal.id, putanja:materijal.putanja.split("/")[3],naslov:materijal.naslov};
             imena_materijala.push(ime_materijala);
         });
 
@@ -165,7 +162,6 @@ exports.downloadMaterial = (req, res) => {
   
 
 exports.okaciMaterijal = (req, res) => {
-    // Log the structure of req.files to debug
     console.log(req.files);
 
     if (!req.files || Object.keys(req.files).length === 0) {

@@ -6,39 +6,16 @@ import PredmetContext from '../context/PredmetContext';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import Header from '../components/Header';
-/*
-display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  height: 200px;
-  margin: 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  box-shadow: 10px 5px 5px rgba(2, 67, 232, 0.078);
-  color: #0f75bd;
-  background-color: #0f74bd28;
-  gap: 10px;
-  text-decoration: none;
-  word-break: break-all;
-  padding:10px;
+import {useNavigation} from '@react-navigation/native'
+import axios from 'axios'
 
-*/
 
 const Home = () => {
   const { user } = useContext(AuthContext);
-  const { predmeti, fetchPredmeti } = useContext(PredmetContext);
-  const [refreshing,setRefreshing] = useState(false);
+  const {predmeti, fetchPredmeti} = useContext(PredmetContext);
 
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchPredmeti();
-    setRefreshing(false);
-  }
-
+  const URL = 'http://192.168.206.205:8000';
+  const navigator = useNavigation();
 
   useEffect(() => {
     if (user) {
@@ -47,11 +24,20 @@ const Home = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log(predmeti);
-  }, [predmeti]);
+    if (user) {
+      fetchPredmeti();
+    }
+  },[])
 
-  const handlePress = () => {
-    
+
+
+  const handlePress = (event,predmet) => {
+    event.preventDefault();
+    navigator.navigate('MaterialsMainPage', {
+      imePredmeta:predmet.imePredmeta,
+      imeSmjera:predmet.imeSmjera,
+      imeFakulteta:predmet.imeFakulteta
+    })
   }
 
   return (
@@ -64,15 +50,13 @@ const Home = () => {
         keyExtractor={(item) => `${item.imePredmeta}-${item.imeSmjera}-${item.imeFakulteta}`}
         renderItem={({ item }) => (
 
-          <TouchableOpacity onPress={handlePress}>
+          <TouchableOpacity onPress={(e) => {handlePress(e,item)}}>
           <View style={styles.singleSubject}>
             <Text ellipsizeMode = "tail" style={styles.singleSubjectName}>{item.imePredmeta}</Text>
           </View>
           </TouchableOpacity>
         )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+      
       />
     </SafeAreaView>
   );
@@ -93,9 +77,21 @@ const styles = StyleSheet.create({
  
   },
 
-  
+  noOfUnread: {
+    position:'absolute',
+    backgroundColor:'#f7941d',
+    alignItems:'center',
+    justifyContent:'center',
+    width:30,
+    height:30,
+    borderRadius:25,
+    color:'white',
+    right:0,
+    top:-2
+  },
   
   singleSubject: {
+    position:'relative',
     marginVertical: 10,
     padding: 30,
     backgroundColor: '#0f74bd28',

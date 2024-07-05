@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faBell, faBook, faPoll, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import TabIcon from '../components/TabIcon';
@@ -7,12 +8,79 @@ import Calendar from './calendar';
 import Materials from './materials';
 import Profile from './profile';
 import Results from './results';
-import NotificationsMainPage from '../components/NotificationsMainPage';
-import Notifications from './notifications'
+import NotificationsMainPage from './NotificationsMainPage';
+import Notifications from './notifications';
+import MaterialsMainPage from './MaterialsMainPage';
+import NewNotification from './NewNotification'
+import AuthContext from '../context/AuthContext';
+import InsertResults from './ResultsProfessor';
+import InsertResultsOneSubject from './InsertResultsOneSubject';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const NotificationsStack = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen 
+                name="NotificationsHome"
+                component={Notifications} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen 
+                name="NotificationsMainPage" 
+                component={NotificationsMainPage} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen
+                name = "NewNotification"
+                component={NewNotification}
+                options={{headerShown:false}}
+
+            />
+        </Stack.Navigator>
+    );
+};
+
+
+const ResultsStack = () => {
+    return (
+        <Stack.Navigator initialRouteName='InsertResults'>
+            <Stack.Screen 
+                name="InsertResults"
+                component={InsertResults} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen 
+                name="InsertResultsOneSubject" 
+                component={InsertResultsOneSubject} 
+                options={{ headerShown: false }} 
+            />
+          
+        </Stack.Navigator>
+    );
+};
+
+const MaterialsStack = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen 
+                name="MaterialsHome"
+                component={Materials} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen 
+                name="MaterialsMainPage" 
+                component={MaterialsMainPage} 
+                options={{ headerShown: false }} 
+            />
+
+        </Stack.Navigator>
+    );
+}
 
 const Tabs = () => {
+    const {user} = useContext(AuthContext);
     return (
         <Tab.Navigator
             screenOptions={{
@@ -26,19 +94,10 @@ const Tabs = () => {
                 }
             }}
         >
-            <Tab.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabIcon icon={faUser} color={color} name="Profil" focused={focused} />
-                    ),
-                    headerShown: false 
-                }}
-            />
+            
             <Tab.Screen
                 name="Notifications"
-                component={Notifications}
+                component={NotificationsStack}
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabIcon icon={faBell} color={color} name="Obavještenja" focused={focused} />
@@ -48,7 +107,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Materials"
-                component={Materials}
+                component={MaterialsStack}
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabIcon icon={faBook} color={color} name="Materijali" focused={focused} />
@@ -58,7 +117,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Results"
-                component={Results}
+                component={user && user.rola === 'Student' ? Results : ResultsStack}
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabIcon icon={faPoll} color={color} name="Rezultati" focused={focused} />
@@ -76,6 +135,7 @@ const Tabs = () => {
                     headerShown: false
                 }}
             />
+          
         </Tab.Navigator>
     );
 };

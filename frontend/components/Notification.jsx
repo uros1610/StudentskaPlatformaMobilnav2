@@ -6,13 +6,16 @@ import AuthContext from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
-const Obavjestenje = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeprocitana, obavjestenja, setObavjestenja }) => {
+const Notification = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeprocitana, obavjestenja, setObavjestenja }) => {
   const [visible, setVisible] = useState(false);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const [neprocitano, setNeprocitano] = useState();
 
+  console.log("USAO JE OVDJE!");
+
   const URL = 'http://192.168.206.205:8000'
+  
 
   const oznaciProcitano = async (e) => {
     e.stopPropagation();
@@ -28,7 +31,7 @@ const Obavjestenje = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeproc
   const brisiObavjestenje = async (e) => {
     try {
       const response = await axios.delete(`${URL}/obavjestenje/${id}`);
-      setNeprocitana(neProcitana.filter(neprocitano => neprocitano.id_obavjestenja !== id));
+      setNeprocitana(neProcitana?.filter(neprocitano => neprocitano.id_obavjestenja !== id));
       setObavjestenja(obavjestenja.filter(obavjestenje => obavjestenje.id_obavjestenja !== id));
     } catch (err) {
       console.log(err);
@@ -36,7 +39,7 @@ const Obavjestenje = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeproc
   };
 
   useEffect(() => {
-    setNeprocitano(neProcitana.some(neprocitano => neprocitano.id_obavjestenja === id));
+    setNeprocitano(neProcitana?.some(neprocitano => neprocitano.id_obavjestenja === id));
   }, [neProcitana]);
 
   return (
@@ -46,7 +49,7 @@ const Obavjestenje = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeproc
         <Text style={styles.naslovObavjestenje}>{naslov}</Text>
       </View>
 
-      {neprocitano && <FontAwesomeIcon icon={faBell} style={styles.zvonceNeprocitano} />}
+      {user && user.rola === 'Student' && neprocitano && <FontAwesomeIcon icon={faBell} style={styles.zvonceNeprocitano} />}
 
       {visible && (
         <View style={styles.tekstObavjestenja}>
@@ -128,4 +131,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Obavjestenje;
+export default Notification;

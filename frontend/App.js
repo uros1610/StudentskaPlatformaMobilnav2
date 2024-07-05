@@ -8,6 +8,7 @@ import { PredmetContextProvider } from './context/PredmetContext';
 import setupInterceptors from './interceptor';
 import Login from './components/Login';
 import MainStack from './screens/MainStack';
+import Profile from './screens/profile'
 
 const Stack = createNativeStackNavigator();
 

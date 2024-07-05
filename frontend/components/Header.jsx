@@ -18,12 +18,12 @@ const Header = () => {
     <SafeAreaView style={styles.headerContainer}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('MainStack')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
             <Image source={require('../assets/logo_si.png')} style={styles.logo} />
           </TouchableOpacity>
         </View>
         <View style={styles.navLinks}>
-          <TouchableOpacity onPress={() => navigation.navigate('MainStack')} style={styles.navItem}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.navItem}>
             <Text style={styles.linkText}>{user ? user.korisnickoIme : 'Profil'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={styles.navItem}>

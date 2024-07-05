@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: 'rgb(240,240,240)',
   },
   mainDivForResults: {
