@@ -33,6 +33,8 @@ const InsertResults = () => {
     const {predmeti,fetchPredmeti} = useContext(PredmetContext);
     const navigation = useNavigation();
 
+    
+
 
     const URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -55,11 +57,19 @@ const InsertResults = () => {
     }
   }, [user]);
 
-  const handlePress = () => {
-    navigation.navigate('InsertResultsOneSubject',{
-        odabranPredmet:odabranPredmet,
-        odabranFakultet:odabranFakultet,
-        odabranSmjer:odabranSmjer
+  const handlePressProfessors = () => {
+    navigation.navigate('MaterialsMainPage',{
+        imePredmeta:odabranPredmet,
+        imeFakulteta:odabranFakultet,
+        imeSmjera:odabranSmjer
+    })
+  }
+
+  const navigateToEditMaterials = () => {
+    navigation.navigate('EditMaterials',{
+        imePredmeta:odabranPredmet,
+        imeFakulteta:odabranFakultet,
+        imeSmjera:odabranSmjer
     })
   }
 
@@ -107,7 +117,20 @@ const InsertResults = () => {
     return (
         <SafeAreaView style={styles.wrapForResults}>
             <Header/>
-            <Text style={styles.header}>Upis rezultata</Text>
+            <Text style={styles.header}>Materijali</Text>
+
+            {user && user.rola === 'Profesor' && (
+        <View style={{ alignItems:'center'}}>
+
+          <TouchableOpacity style = {styles.newNotif} onPress={handlePressProfessors}>
+            
+            <Text style = {styles.textNewNotif}>
+              Prikaži sve materijale
+            </Text>
+          
+          </TouchableOpacity>
+
+          </View>)}
 
             <DropdownComponent
             handleFakultetChange={handleFakultetChange}
@@ -124,10 +147,20 @@ const InsertResults = () => {
             setOdabranSmjer={setOdabranSmjer}
           />
 
-        <TouchableOpacity style = {styles.newNotif} onPress={handlePress}>
-            <Text style = {styles.textNewNotif}>Upišite rezultate</Text>
-        </TouchableOpacity>
-            
+          {user && user.rola === 'Profesor' && (
+            <View style={{ alignItems:'center'}}>
+
+              <TouchableOpacity style = {styles.newNotif} onPress={navigateToEditMaterials}>
+                
+                <Text style = {styles.textNewNotif}>
+                  Edit materijala
+                </Text>
+              
+              </TouchableOpacity>
+
+              </View>)}
+
+        
         </SafeAreaView>
     );
 };

@@ -6,7 +6,7 @@ import AuthContext from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
-const Notification = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeprocitana, obavjestenja, setObavjestenja }) => {
+const Notification = ({naslov, opis, id, datumKreiranja, neProcitana, setNeprocitana, obavjestenja, setObavjestenja,imePredmeta}) => {
   const [visible, setVisible] = useState(false);
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -14,7 +14,7 @@ const Notification = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeproc
 
   console.log("USAO JE OVDJE!");
 
-  const URL = 'http://192.168.206.205:8000'
+  const URL = process.env.EXPO_PUBLIC_API_URL;
   
 
   const oznaciProcitano = async (e) => {
@@ -59,7 +59,9 @@ const Notification = ({ naslov, opis, id, datumKreiranja, neProcitana, setNeproc
           )}
           {user.rola === 'Profesor' && (
             <View style={styles.dugmadDiv}>
-              <Button title="Izmijeni" onPress={(e) => { e.stopPropagation(); navigation.navigate('EditNotification', { id }); }} />
+              <Button title="Izmijeni" onPress={(e) => { e.stopPropagation(); navigation.navigate('NewNotification', { id,imePredmeta:obavjestenja[0].ime_predmeta,
+                imeSmjera:obavjestenja[0].ime_smjera,imeFakulteta:obavjestenja[0].ime_fakulteta
+              }); }} />
               <Button title="Izbriši" onPress={(e) => { e.stopPropagation(); brisiObavjestenje(); }} />
             </View>
           )}

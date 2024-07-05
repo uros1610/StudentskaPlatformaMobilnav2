@@ -7,7 +7,7 @@ const AuthContext = createContext({});
 export const AuthContextProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
-  const URL = 'http://192.168.206.205:8000'
+  const URL = process.env.EXPO_PUBLIC_API_URL;
 
   console.log(URL);
 
@@ -29,7 +29,9 @@ export const AuthContextProvider = ({ children }) => {
   const login = async (inputs) => {
 
     try {
+      console.log(inputs)
       const resp = await axios.post(`${URL}/auth/login`, inputs);
+
       const data = {
         rola: resp.data.rola,
         korisnickoIme: resp.data.korisnickoIme,

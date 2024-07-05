@@ -14,7 +14,7 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   const {predmeti, fetchPredmeti} = useContext(PredmetContext);
 
-  const URL = 'http://192.168.206.205:8000';
+  const URL = process.env.EXPO_PUBLIC_API_URL;
   const navigator = useNavigation();
 
   useEffect(() => {
@@ -43,6 +43,10 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header/>
+
+      <Text style = {styles.textNewNotiff}>
+              Materijali
+            </Text>
 
       <FlatList
         contentContainerStyle={styles.flatListContainer}
@@ -105,6 +109,12 @@ const styles = StyleSheet.create({
   singleSubjectName: {
     fontSize: 30,
     color: '#0f75bd',
+
+  },
+  textNewNotiff: {
+    color:'#0f75bd',
+    fontSize:35,
+    fontWeight:'bold'
 
   },
   

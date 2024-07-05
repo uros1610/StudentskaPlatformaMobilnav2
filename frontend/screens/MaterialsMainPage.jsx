@@ -13,7 +13,7 @@ import {shareAsync} from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker';
 
 
-  const URL = 'http://192.168.206.205:8000'
+const URL = process.env.EXPO_PUBLIC_API_URL;
 
 const SubjectMaterials = ({ route, navigation }) => {
   const { imePredmeta, imeSmjera, imeFakulteta } = route.params;
@@ -42,8 +42,8 @@ const SubjectMaterials = ({ route, navigation }) => {
   const openDocumentPicker = async (uri, fileName) => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*', // All files
-        copyToCacheDirectory: false, // Set to true if you want to copy the file to the cache directory
+        type: '*/*',
+        copyToCacheDirectory: false,
         initialDirectory: uri.substring(0, uri.lastIndexOf('/')),
       });
 
@@ -95,9 +95,7 @@ const SubjectMaterials = ({ route, navigation }) => {
 
   useEffect(() => {
     const found = predmeti.find(predmet => predmet.imePredmeta === imePredmeta && predmet.imeSmjera === imeSmjera && predmet.imeFakulteta === imeFakulteta);
-    if (!found) {
-      navigation.navigate('Home');
-    }
+    
   }, [predmeti]);
 
   const [materijali, setMaterijali] = useState();
@@ -120,7 +118,8 @@ const SubjectMaterials = ({ route, navigation }) => {
     <SafeAreaView style={styles.wrapperContainer}>
       <Header />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-       
+
+        <Text style = {styles.headerText}>{imePredmeta}</Text> 
 
         <View style={styles.materialsCards}>
           {materijali?.map((materijal, index) => (

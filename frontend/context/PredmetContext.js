@@ -8,7 +8,7 @@ export const PredmetContextProvider = ({ children }) => {
     const { user,logout} = useContext(AuthContext);
     const [predmeti, setPredmeti] = useState([]);
 
-    const URL = 'http://192.168.206.205:8000'
+    const URL = process.env.EXPO_PUBLIC_API_URL;
 
     const fetchPredmeti = async () => {
         try {

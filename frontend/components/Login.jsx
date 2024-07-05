@@ -34,7 +34,8 @@ const Login = () => {
       navigator.navigate('MainStack')
      
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.'); // Set error message from backend or a default one
+      console.log(error);
+      setErrorMessage(error.response?.data?.message || error.response); // Set error message from backend or a default one
       
       
     }

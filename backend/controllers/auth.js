@@ -8,7 +8,7 @@ const login = (req,res) => {
 
     const {username,password} = req.body;
 
-    console.log(req.body);
+    console.log("fdsfdsfdsfsd",req.body);
 
     console.log(username,password);
 

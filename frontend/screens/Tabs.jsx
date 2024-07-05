@@ -15,6 +15,8 @@ import NewNotification from './NewNotification'
 import AuthContext from '../context/AuthContext';
 import InsertResults from './ResultsProfessor';
 import InsertResultsOneSubject from './InsertResultsOneSubject';
+import MaterialsProfessor from './MaterialsProfessor'
+import EditMaterials from './EditMaterials';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -75,10 +77,36 @@ const MaterialsStack = () => {
                 options={{ headerShown: false }} 
             />
 
+
+
         </Stack.Navigator>
     );
 }
 
+const MaterialsProfessorStack = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen 
+                name="MaterialsProfessor"
+                component={MaterialsProfessor} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen 
+                name="MaterialsMainPage" 
+                component={MaterialsMainPage} 
+                options={{ headerShown: false }} 
+            />
+            <Stack.Screen
+                name = "EditMaterials"
+                component={EditMaterials}
+                options={{headerShown:false}}
+            />
+
+
+
+        </Stack.Navigator>
+    );
+}
 const Tabs = () => {
     const {user} = useContext(AuthContext);
     return (
@@ -107,7 +135,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Materials"
-                component={MaterialsStack}
+                component={user && user.rola === 'Student' ? MaterialsStack : MaterialsProfessorStack}
                 options={{
                     tabBarIcon: ({ color, focused }) => (
                         <TabIcon icon={faBook} color={color} name="Materijali" focused={focused} />

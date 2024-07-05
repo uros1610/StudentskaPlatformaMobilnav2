@@ -30,7 +30,7 @@ const Notifications = () => {
   const [predmetiFiltrirani, setPredmetiFiltrirani] = useState([]);
 
 
-  const URL = 'http://192.168.206.205:8000';
+  const URL = process.env.EXPO_PUBLIC_API_URL;
 
   const handleFakultetChange = (name) => {
     setOdabranFakultet(name);
@@ -185,7 +185,9 @@ const Notifications = () => {
     <SafeAreaView style={styles.container}>
       <Header />
 
-      
+      <Text style = {styles.textNewNotiff}>
+              Obavještenja
+            </Text>
 
       {user && user.rola === 'Profesor' && (
         <View style={{ minHeight: 300, alignItems:'center'}}>
@@ -268,6 +270,12 @@ const styles = StyleSheet.create({
   textNewNotif: {
     color:'#0f75bd',
     fontSize:15,
+    fontWeight:'bold'
+
+  },
+  textNewNotiff: {
+    color:'#0f75bd',
+    fontSize:35,
     fontWeight:'bold'
 
   },

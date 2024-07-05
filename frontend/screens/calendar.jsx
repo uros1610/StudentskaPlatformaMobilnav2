@@ -17,7 +17,7 @@ const Calendar = () => {
   const [open, setOpen] = useState(false);
   const [shownMonth, setShownMonth] = useState();
 
-  const URL = 'http://192.168.206.205:8000'
+  const URL = process.env.EXPO_PUBLIC_API_URL;
 
 
   useEffect(() => {

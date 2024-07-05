@@ -25,7 +25,7 @@ const NotificationsMainPage = ({ route, navigation }) => {
   }
 
 
-  const URL = 'http://192.168.206.205:8000';
+  const URL = process.env.EXPO_PUBLIC_API_URL;
 
   const fetchNeprocitanaIbroj = async () => {
     try {
@@ -62,6 +62,8 @@ const NotificationsMainPage = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
+
+      <Text style = {styles.imePredmeta}>{imePredmeta}</Text>
       
       {loading && <View style = {styles.loadingWrap}><ActivityIndicator size="large" /></View>}
 
@@ -78,6 +80,7 @@ const NotificationsMainPage = ({ route, navigation }) => {
             setNeprocitana={setNeprocitana}
             obavjestenja={obavjestenja}
             setObavjestenja={setObavjestenja}
+            imePredmeta = {imePredmeta}
           />
         )}
       />}
@@ -94,6 +97,11 @@ const styles = StyleSheet.create({
   loadingWrap: {
     flex: 1,
     justifyContent: 'center',
+  },
+  imePredmeta: {
+    fontSize:25,
+    marginBottom:20,
+    color:'#0f75bd'
   }
 });
 
