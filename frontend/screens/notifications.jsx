@@ -276,7 +276,8 @@ const styles = StyleSheet.create({
   textNewNotiff: {
     color:'#0f75bd',
     fontSize:35,
-    fontWeight:'bold'
+    fontWeight:'bold',
+    marginBottom:15,
 
   },
 

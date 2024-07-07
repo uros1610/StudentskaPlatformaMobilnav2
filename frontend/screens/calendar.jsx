@@ -125,16 +125,28 @@ const Calendar = () => {
   const renderDays = () => {
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+    const mth = new Date(currentDate.getFullYear(),currentDate.getMonth(),1).getDay();
+
+
+
+
+
     return (
       <View style={styles.days}>
-        {daysOfWeek.map((day, index) => (
-          <View key={index} style={styles.day}>
-            <Text>{day}</Text>
-          </View>
-        ))}
+        {Array.from({length:7},(v,i) => (
+          <View key={i} style={styles.day}>
+            <Text>{daysOfWeek[(mth+i)%7]}</Text>
+          </View>)
+          
+        )}
+        
       </View>
     );
   };
+
+  useEffect(() => {
+
+  })
 
   const renderCells = () => {
     const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -257,11 +269,9 @@ const styles = StyleSheet.create({
   calendar: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%',
-    marginTop: 16,
   },
   header: {
     flexDirection: 'row',

@@ -191,7 +191,9 @@ const styles = StyleSheet.create({
     header: {
       color:'#0f75bd',
       fontSize:35,
-      fontWeight:'bold'
+      fontWeight:'bold',
+      marginBottom:15,
+
     },
     mainDivForResults: {
         display: 'flex',
