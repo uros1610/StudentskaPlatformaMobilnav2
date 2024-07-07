@@ -156,9 +156,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     header: {
-        color: '#0f75bd',
-        fontSize: 24,
-        marginBottom: 20,
+      color:'#0f75bd',
+      fontSize:35,
+      fontWeight:'bold'
     },
     mainDivForResults: {
         display: 'flex',
